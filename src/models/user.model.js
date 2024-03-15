@@ -40,7 +40,7 @@ const userSchema = new Schema(
     },
     refreshToken: {
       type: String,
-      required: true,
+      
     },
     watchHistory: [
       // watch history = [ {} , {} ]
@@ -54,14 +54,13 @@ const userSchema = new Schema(
 );
 
 // pre is a mongoose inbuilt middleware which we can invoke on the bases of the methods
-userSchema.pre("save", async function (req, res, next) {
-  // why we are using function other than arrow function is that we w
-  if (!this.isModified("password")) {
-    return next();
-  }
-  this.password = await bcrypt.hash(this.password, 10);
-  next();
-});
+userSchema.pre("save", async function (next) {
+    if(!this.isModified("password")) return next();
+
+    this.password = await bcrypt.hash(this.password, 10)
+    next()
+})
+
 
 //  we can create a method
 userSchema.methods.isPasswordCorrect = async function (password) {
@@ -83,6 +82,7 @@ userSchema.methods.generateAccessToken = function () {
 };
 
 
+// It's important to note that although this method doesn't explicitly take parameters, it utilizes the context of the instance (this._id) 
 userSchema.methods.generateRefreshToken = function () {
     const payload = {
       _id: this._id,

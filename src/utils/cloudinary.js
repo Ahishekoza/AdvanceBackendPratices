@@ -12,19 +12,24 @@ cloudinary.config({
 const uploadOnCloudinary = async (localFilePath) => {
   if (!localFilePath) return null;   // if file path is not specified return null
 
+try{
 
-  await cloudinary.uploader.upload(localFilePath,{resource_type:'auto'})
-  .then((response)=>{
-    //  response contains many things   but we need repsonse.url
-    console.log(response);
-    fs.unlinkSync(localFilePath)
-    return response;
-  })
-  .catch((error)=>{
-    console.log(error);
-    fs.unlinkSync(localFilePath)
-    return null 
-  })
+  const response = await cloudinary.uploader.upload(localFilePath,{resource_type:'auto'})
+   
+     //  response contains many things   but we need repsonse.url
+     
+     // remove file from the local sever
+     fs.unlinkSync(localFilePath)
+     
+     return response;
+   
+}
+catch(error){
+  console.log(error);
+  fs.unlinkSync(localFilePath)
+  return null 
+}
+  
 };
 
 

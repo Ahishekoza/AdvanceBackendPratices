@@ -1,6 +1,7 @@
 import express from "express";
-import { registerUser } from "../controllers/user.controller.js";
+import { logOutUser, loginUser, registerUser } from "../controllers/user.controller.js";
 import { upload } from "../middleware/multer.js";
+import { verifyJwt } from "../middleware/auth.middleware.js";
 
 const route = express.Router();
 
@@ -13,5 +14,8 @@ route.post(
   ]),
   registerUser
 );
+
+route.post('/login',loginUser)
+route.delete('/logout',verifyJwt,logOutUser)
 
 export default route;
